@@ -11,15 +11,31 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatInputModule} from '@angular/material/input';
+
+//Para usar el mask
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+//Cambia el idioma a español
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+
 import { RegistroUsuariosScreenComponent } from './screens/registro-usuarios-screen/registro-usuarios-screen.component';
 import { HomeScreenComponent } from './screens/home-screen/home-screen.component';
+import { NavbarComponent } from './partials/navbar/navbar.component';
+import { RegistroAdminComponent } from './partials/registro-admin/registro-admin.component';
+import { RegistroAlumnosComponent } from './partials/registro-alumnos/registro-alumnos.component';
+import { RegistroMaestrosComponent } from './partials/registro-maestros/registro-maestros.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginScreenComponent,
     RegistroUsuariosScreenComponent,
-    HomeScreenComponent
+    HomeScreenComponent,
+    NavbarComponent,
+    RegistroAdminComponent,
+    RegistroAlumnosComponent,
+    RegistroMaestrosComponent
   ],
   imports: [
     BrowserModule,
@@ -28,9 +44,15 @@ import { HomeScreenComponent } from './screens/home-screen/home-screen.component
     MatButtonModule,
     MatIconModule,
     MatDividerModule,
-    FormsModule
+    FormsModule,
+    MatRadioModule,
+    MatInputModule,
+    NgxMaskDirective
   ],
-  providers: [],
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'es-ES'},
+    provideNgxMask()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
