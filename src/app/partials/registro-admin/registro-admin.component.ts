@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-registro-admin',
@@ -19,7 +20,9 @@ export class RegistroAdminComponent implements OnInit{
   public inputType_1: string = 'password';
   public inputType_2: string = 'password';
 
-  constructor(){}
+  constructor(
+    private location: Location
+  ){}
 
   ngOnInit(): void {
 
@@ -51,7 +54,7 @@ export class RegistroAdminComponent implements OnInit{
   }
 
   public regresar(){
-
+    this.location.back();
   }
 
   public registrar(){
