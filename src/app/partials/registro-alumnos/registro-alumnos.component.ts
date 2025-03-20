@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AlumnosService } from 'src/app/services/alumnos.service';
+declare var $:any;
 
 @Component({
   selector: 'app-registro-alumnos',
@@ -9,7 +12,6 @@ import { Location } from '@angular/common';
 export class RegistroAlumnosComponent implements OnInit{
   @Input() rol: string = "";
   @Input() datos_user: any = {};
-
   //Para contraseñas
   public hide_1: boolean = false;
   public hide_2: boolean = false;
@@ -17,14 +19,59 @@ export class RegistroAlumnosComponent implements OnInit{
   public inputType_2: string = 'password';
 
   public alumno:any= {};
+  public token: string = "";
   public errors:any={};
   public editar:boolean = false;
+  public idUser: Number = 0;
 
   constructor(
-    private location: Location
+    private router: Router,
+    private location : Location,
+    public activatedRoute: ActivatedRoute,
+    private alumnosService: AlumnosService,
   ){}
 
   ngOnInit(): void {
+    this.alumno = this.alumnosService.esquemaAlumno();
+    this.alumno.rol = this.rol;
+  }
+
+  public regresar(){
+    this.location.back();
+  }
+
+  public registrar(){
+    //Validar
+    this.errors = [];
+
+    this.errors = this.alumnosService.validarAlumno(this.alumno, this.editar);
+    if(!$.isEmptyObject(this.errors)){
+      return false;
+    }
+    //Validar la contraseña
+    if(this.alumno.password == this.alumno.confirmar_password){
+      //Aquí si todo es correcto vamos a registrar - aquí se manda a llamar al servicio
+      this.alumnosService.registrarAlumno(this.alumno).subscribe(
+        (response)=>{
+          alert("Usuario registrado correctamente");
+          console.log("Usuario registrado: ", response);
+          if(this.token != ""){
+            this.router.navigate(["home"]);
+           }else{
+             this.router.navigate(["/"]);
+           }
+        }, (error)=>{
+          alert("No se pudo registrar usuario");
+        }
+      )
+    }else{
+      alert("Las contraseñas no coinciden");
+      this.alumno.password="";
+      this.alumno.confirmar_password="";
+    }
+  }
+
+  public actualizar(){
 
   }
 
@@ -51,18 +98,6 @@ export class RegistroAlumnosComponent implements OnInit{
       this.inputType_2 = 'password';
       this.hide_2 = false;
     }
-  }
-
-  public regresar(){
-    this.location.back();
-  }
-
-  public registrar(){
-
-  }
-
-  public actualizar(){
-
   }
 
   //Función para detectar el cambio de fecha
