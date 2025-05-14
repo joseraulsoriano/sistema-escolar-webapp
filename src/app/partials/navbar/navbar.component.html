@@ -17,7 +17,7 @@
               <a class="nav-link" id="maestro" (click)="clickNavLink('maestros')">Maestros</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link">Lista de materias</a>
+              <a class="nav-link">Eventos Académicos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" id="graficas" (click)="clickNavLink('graficas')">Gráficas</a>
@@ -30,7 +30,7 @@
                 <li><a class="dropdown-item" (click)="goRegistro()" *ngIf="rol!='alumno'">Alumnos</a></li>
                 <li><a class="dropdown-item" (click)="goRegistro()" *ngIf="rol!='maestro' && rol!='alumno'">Maestros</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Materias</a></li>
+                <li><a class="dropdown-item" href="#">Eventos Académicos</a></li>
               </ul>
             </li>
           </ng-container>
