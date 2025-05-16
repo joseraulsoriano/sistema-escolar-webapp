@@ -12,12 +12,12 @@ const httpOptions = {
 };
 
 //Estas son variables para las cookies
-const session_cookie_name = 'sistema-escolar-token';
-const user_email_cookie_name = 'sistema-escolar-email';
-const user_id_cookie_name = 'sistema-escolar-user_id';
-const user_complete_name_cookie_name = 'sistema-escolar-user_complete_name';
-const group_name_cookie_name = 'sistema-escolar-group_name';
-const codigo_cookie_name = 'sistema-escolar-codigo';
+const session_cookie_name = 'CRUD-ESCOLAR-WEBAPP-token';
+const user_email_cookie_name = 'CRUD-ESCOLAR-WEBAPP-email';
+const user_id_cookie_name = 'CRUD-ESCOLAR-WEBAPP-user_id';
+const user_complete_name_cookie_name = 'CRUD-ESCOLAR-WEBAPP-user_complete_name';
+const group_name_cookie_name = 'CRUD-ESCOLAR-WEBAPP-group_name';
+const codigo_cookie_name = 'CRUD-ESCOLAR-WEBAPP-codigo';
 
 @Injectable({
   providedIn: 'root'
