@@ -68,6 +68,7 @@ mat-form-field {
   justify-content: flex-end;
   align-items: center;
   padding-bottom: 1rem;
+  gap: 12px;
 }
 
 .btn-primary {
@@ -83,13 +84,30 @@ mat-form-field {
   font-weight: bold;
   letter-spacing: 0px;
   color: #FFFFFF;
-  opacity: 1;
   box-shadow: 0 2px 8px rgba(0,146,184,0.10);
+  transition: background 0.2s, border 0.2s;
 }
 
 .btn-primary:hover {
   background-color: #017895!important;
   border-color: #017895!important;
+}
+
+.btn-cancelar {
+  width: 120px;
+  height: 48px;
+  background-color: #fff!important;
+  border: 1.5px solid #d32f2f!important;
+  color: #d32f2f!important;
+  border-radius: 8px!important;
+  font-family: Nexa-Bold, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-cancelar:hover {
+  background-color: #fff0f0!important;
 }
 
 .horario-fields {
@@ -136,4 +154,38 @@ mat-form-field {
   text-align: center;
   font-weight: bold;
   font-size: 1.05rem;
+}
+
+/* Mejoras para select y validaciones */
+mat-select, select {
+  min-height: 48px;
+}
+
+mat-error {
+  color: #d32f2f;
+  font-size: 0.95rem;
+  margin-top: -12px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+input.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched {
+  border-color: #d32f2f;
+  background: #fff0f0;
+}
+
+@media (max-width: 600px) {
+  .registro-evento-card {
+    max-width: 98vw;
+    margin: 8px 0;
+    border-radius: 10px;
+  }
+  .evento-form {
+    padding: 12px 6px 0 6px;
+    gap: 12px;
+  }
+  .section-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
 }

@@ -24,6 +24,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatDialogModule} from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
 //Para usar el mask
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 //Cambia el idioma a español
@@ -81,6 +82,7 @@ import { RegistroEventoComponent } from './partials/registro-evento/registro-eve
     MatPaginatorModule,
     MatDialogModule,
     MatCardModule,
+    MatFormFieldModule,
     NgChartsModule,
     ReactiveFormsModule,
     MatGridListModule
