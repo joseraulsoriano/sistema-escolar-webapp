@@ -3,15 +3,13 @@
   <div class="registro-evento-center">
     <mat-card class="registro-evento-card">
       <div class="registro-evento-header">
-        <button mat-icon-button color="primary" routerLink="/" aria-label="Regresar" style="align-self: flex-start; margin-left: 8px;">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
         <span class="registro-evento-title">Registro de Evento Académico</span>
       </div>
       <form [formGroup]="eventoForm" (ngSubmit)="onSubmit()" class="evento-form">
         <mat-form-field appearance="fill">
           <mat-label>Nombre del evento</mat-label>
           <input matInput formControlName="nombre_evento" required>
+          <mat-error *ngIf="eventoForm.get('nombre_evento')?.invalid && eventoForm.get('nombre_evento')?.touched">{{ getError('nombre_evento') }}</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
@@ -22,29 +20,54 @@
             <mat-option value="Seminario">Seminario</mat-option>
             <mat-option value="Concurso">Concurso</mat-option>
           </mat-select>
+          <mat-error *ngIf="eventoForm.get('tipo_evento')?.invalid && eventoForm.get('tipo_evento')?.touched">{{ getError('tipo_evento') }}</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Fecha de realización</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="fecha_realizacion" required>
+          <input matInput [matDatepicker]="picker" formControlName="fecha_realizacion" required [min]="minDate">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="eventoForm.get('fecha_realizacion')?.invalid && eventoForm.get('fecha_realizacion')?.touched">{{ getError('fecha_realizacion') }}</mat-error>
         </mat-form-field>
 
         <div class="horario-fields">
           <mat-form-field appearance="fill" fxFlex>
             <mat-label>Hora de inicio</mat-label>
-            <input matInput type="time" formControlName="hora_inicio" required>
+            <input matInput 
+                   [ngxMatTimepicker]="inicioPicker" 
+                   formControlName="hora_inicio" 
+                   required 
+                   readonly
+                   [format]="timepickerConfig.format"
+                   [min]="timepickerConfig.minTime"
+                   [max]="timepickerConfig.maxTime">
+            <ngx-mat-timepicker #inicioPicker></ngx-mat-timepicker>
+            <mat-error *ngIf="eventoForm.get('hora_inicio')?.invalid && eventoForm.get('hora_inicio')?.touched">
+              {{ getError('hora_inicio') }}
+            </mat-error>
           </mat-form-field>
           <mat-form-field appearance="fill" fxFlex>
             <mat-label>Hora de finalización</mat-label>
-            <input matInput type="time" formControlName="hora_final" required>
+            <input matInput 
+                   [ngxMatTimepicker]="finPicker" 
+                   formControlName="hora_final" 
+                   required 
+                   readonly
+                   [format]="timepickerConfig.format"
+                   [min]="timepickerConfig.minTime"
+                   [max]="timepickerConfig.maxTime">
+            <ngx-mat-timepicker #finPicker></ngx-mat-timepicker>
+            <mat-error *ngIf="eventoForm.get('hora_final')?.invalid && eventoForm.get('hora_final')?.touched">
+              {{ getError('hora_final') }}
+            </mat-error>
           </mat-form-field>
         </div>
 
         <mat-form-field appearance="fill">
           <mat-label>Lugar</mat-label>
           <input matInput formControlName="lugar" required>
+          <mat-error *ngIf="eventoForm.get('lugar')?.invalid && eventoForm.get('lugar')?.touched">{{ getError('lugar') }}</mat-error>
         </mat-form-field>
 
         <div class="publico-label">Público objetivo</div>
@@ -61,17 +84,30 @@
               {{r.user?.first_name || r.first_name}} {{r.user?.last_name || r.last_name}} ({{r.tipo}})
             </mat-option>
           </mat-select>
+          <mat-error *ngIf="eventoForm.get('responsable')?.invalid && eventoForm.get('responsable')?.touched">{{ getError('responsable') }}</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Descripción</mat-label>
           <textarea matInput formControlName="descripcion_breve"></textarea>
+          <mat-error *ngIf="eventoForm.get('descripcion_breve')?.invalid && eventoForm.get('descripcion_breve')?.touched">{{ getError('descripcion_breve') }}</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Cupo máximo de asistentes</mat-label>
           <input matInput type="number" formControlName="cupo_maximo" min="1" required>
+          <mat-error *ngIf="eventoForm.get('cupo_maximo')?.invalid && eventoForm.get('cupo_maximo')?.touched">{{ getError('cupo_maximo') }}</mat-error>
         </mat-form-field>
+
+        <ng-container *ngIf="mostrarProgramaEducativo">
+          <mat-form-field appearance="fill">
+            <mat-label>Programa educativo</mat-label>
+            <mat-select formControlName="programa_educativo" required>
+              <mat-option *ngFor="let programa of programasEducativos" [value]="programa">{{programa}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="eventoForm.get('programa_educativo')?.invalid && eventoForm.get('programa_educativo')?.touched">{{ getError('programa_educativo') }}</mat-error>
+          </mat-form-field>
+        </ng-container>
 
         <div class="section-buttons">
           <button mat-raised-button color="primary" type="submit" class="btn-primary">Registrar</button>

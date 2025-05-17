@@ -1,0 +1,85 @@
+<div class="wrapper">
+  <div class="header-home">
+    <app-navbar></app-navbar>
+  </div>
+  <div class="body-maestros">
+    <div class="row mt-5 mb-5">
+      <div class="col-12">
+    <span class="title-perfil">Bienvenido {{name_user}}</span>
+    <br><br>
+    <span class="title-perfil">{{rol}}</span>
+  </div>
+  <div class="container">
+    <div class="row mt-3 mb-5" style="text-align: center;">
+      <div class="col-12">
+        <div class="alert alert-primary" role="alert">
+          <span class="title-table">Lista de eventos académicos registrados</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="body-alumnos container">
+    <div *ngIf="loading">Cargando eventos...</div>
+    <div *ngIf="error">{{ error }}</div>
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="nombre_evento">
+          <th mat-header-cell *matHeaderCellDef>Nombre</th>
+          <td mat-cell *matCellDef="let evento">{{ evento.nombre_evento }}</td>
+        </ng-container>
+        <ng-container matColumnDef="tipo_evento">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let evento">{{ evento.tipo_evento }}</td>
+        </ng-container>
+        <ng-container matColumnDef="fecha_realizacion">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let evento">{{ evento.fecha_realizacion }}</td>
+        </ng-container>
+        <ng-container matColumnDef="hora_inicio">
+          <th mat-header-cell *matHeaderCellDef>Hora inicio</th>
+          <td mat-cell *matCellDef="let evento">{{ evento.hora_inicio }}</td>
+        </ng-container>
+        <ng-container matColumnDef="hora_final">
+          <th mat-header-cell *matHeaderCellDef>Hora final</th>
+          <td mat-cell *matCellDef="let evento">{{ evento.hora_final }}</td>
+        </ng-container>
+        <ng-container matColumnDef="lugar">
+          <th mat-header-cell *matHeaderCellDef>Lugar</th>
+          <td mat-cell *matCellDef="let evento">{{ evento.lugar }}</td>
+        </ng-container>
+        <ng-container matColumnDef="publico_objetivo">
+          <th mat-header-cell *matHeaderCellDef>Público objetivo</th>
+          <td mat-cell *matCellDef="let evento">{{ evento.publico_objetivo }}</td>
+        </ng-container>
+        <ng-container matColumnDef="programa_educativo">
+          <th mat-header-cell *matHeaderCellDef>Programa educativo</th>
+          <td mat-cell *matCellDef="let evento">{{ evento.programa_educativo }}</td>
+        </ng-container>
+        <ng-container matColumnDef="descripcion_breve">
+          <th mat-header-cell *matHeaderCellDef>Descripción</th>
+          <td mat-cell *matCellDef="let evento">{{ evento.descripcion_breve }}</td>
+        </ng-container>
+        <ng-container matColumnDef="cupo_maximo">
+          <th mat-header-cell *matHeaderCellDef>Cupo</th>
+          <td mat-cell *matCellDef="let evento">{{ evento.cupo_maximo }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actualizar">
+          <th mat-header-cell *matHeaderCellDef>Actualizar</th>
+          <td mat-cell *matCellDef="let evento" class="td-editar">
+            <i class="bi bi-pencil-square" (click)="editarEvento(evento)"></i>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="eliminar">
+          <th mat-header-cell *matHeaderCellDef>Eliminar</th>
+          <td mat-cell *matCellDef="let evento" class="td-eliminar">
+            <i class="bi bi-trash3-fill" (click)="eliminarEvento(evento)"></i>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of eventos académicos"></mat-paginator>
+    </div>
+    <div *ngIf="!loading && eventos.length === 0">No hay eventos registrados.</div>
+  </div>
+</div>

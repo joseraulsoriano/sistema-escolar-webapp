@@ -30,6 +30,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 //Cambia el idioma a español
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 
 import { RegistroUsuariosScreenComponent } from './screens/registro-usuarios-screen/registro-usuarios-screen.component';
 import { HomeScreenComponent } from './screens/home-screen/home-screen.component';
@@ -44,6 +45,7 @@ import { EliminarUserModalComponent } from './modals/eliminar-user-modal/elimina
 import { GraficasScreenComponent } from './screens/graficas-screen/graficas-screen.component';
 import { NgChartsModule } from 'ng2-charts';
 import { RegistroEventoComponent } from './partials/registro-evento/registro-evento/registro-evento.component';
+import { EventosAcademicosScreenComponent } from './screens/eventos-academicos-screen/eventos-academicos-screen.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,8 @@ import { RegistroEventoComponent } from './partials/registro-evento/registro-eve
     MaestrosScreenComponent,
     EliminarUserModalComponent,
     GraficasScreenComponent,
-    RegistroEventoComponent
+    RegistroEventoComponent,
+    EventosAcademicosScreenComponent
   ],
   imports: [
     BrowserModule,
@@ -85,7 +88,8 @@ import { RegistroEventoComponent } from './partials/registro-evento/registro-eve
     MatFormFieldModule,
     NgChartsModule,
     ReactiveFormsModule,
-    MatGridListModule
+    MatGridListModule,
+    NgxMatTimepickerModule.setLocale('es-MX'),
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'es-ES'},

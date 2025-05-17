@@ -10,3 +10,10 @@ export interface Evento {
   descripcion?: string;
   cupo: number;
 }
+
+export interface EventosResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: any[]; // Puedes cambiar 'any' por 'Evento' si los campos coinciden exactamente
+}

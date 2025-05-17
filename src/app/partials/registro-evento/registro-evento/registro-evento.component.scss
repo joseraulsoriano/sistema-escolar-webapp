@@ -22,6 +22,11 @@
   box-shadow: 0 8px 32px rgba(0,146,184,0.18), 0 2px 8px rgba(35,31,32,0.10);
   background: #fff;
   padding: 0 0 24px 0;
+  transition: box-shadow 0.2s;
+}
+
+.registro-evento-card:hover {
+  box-shadow: 0 12px 36px rgba(0,146,184,0.22), 0 4px 12px rgba(35,31,32,0.13);
 }
 
 .registro-evento-header {
@@ -113,6 +118,42 @@ mat-form-field {
 .horario-fields {
   display: flex;
   gap: 16px;
+  margin-bottom: 8px;
+
+  mat-form-field {
+    flex: 1;
+  }
+
+  // Estilos para el timepicker
+  ::ng-deep {
+    .ngx-mat-timepicker {
+      .ngx-mat-timepicker-content {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+
+      .ngx-mat-timepicker-toggle {
+        color: #0092B8;
+      }
+
+      .ngx-mat-timepicker-dial {
+        .ngx-mat-timepicker-dial-control {
+          &:hover {
+            background-color: rgba(0,146,184,0.1);
+          }
+        }
+      }
+
+      .ngx-mat-timepicker-button {
+        color: #0092B8;
+        font-weight: 500;
+        
+        &:hover {
+          background-color: rgba(0,146,184,0.1);
+        }
+      }
+    }
+  }
 }
 
 .publico-label {
@@ -163,15 +204,20 @@ mat-select, select {
 
 mat-error {
   color: #d32f2f;
-  font-size: 0.95rem;
-  margin-top: -12px;
-  margin-bottom: 8px;
+  font-size: 0.98rem;
+  margin-top: -8px;
+  margin-bottom: 12px;
   display: block;
+  font-weight: 500;
 }
 
 input.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched {
   border-color: #d32f2f;
   background: #fff0f0;
+}
+
+mat-card {
+  border-radius: 18px;
 }
 
 @media (max-width: 600px) {

@@ -23,6 +23,7 @@ export class RegistroEventoComponent implements OnInit {
     'Licenciatura en Ciencias de la Computación',
     'Ingeniería en Tecnologías de la Información'
   ];
+  mostrarProgramaEducativo = false;
   responsables: any[] = [];
   loadingResponsables = false;
   successMessage: string = '';
@@ -45,12 +46,18 @@ export class RegistroEventoComponent implements OnInit {
   admins: any[] = [];
   maestros: any[] = [];
 
+  public timepickerConfig = {
+    format: 24,
+    minTime: '00:00',
+    maxTime: '23:59'
+  };
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private adminService: AdministradoresService,
     private maestroService: MaestrosService,
-    private eventoService: EventosService
+    private eventoService: EventosService,
   ) {}
 
   ngOnInit(): void {
@@ -69,6 +76,18 @@ export class RegistroEventoComponent implements OnInit {
     });
     const publicoArray = this.eventoForm.get('publico_objetivo') as FormArray;
     this.publicos.forEach(() => publicoArray.push(this.fb.control(false)));
+    this.eventoForm.get('publico_objetivo')?.valueChanges.subscribe(valores => {
+      const estudiantesSeleccionado = valores[0];
+      this.mostrarProgramaEducativo = !!estudiantesSeleccionado;
+      const programaCtrl = this.eventoForm.get('programa_educativo');
+      if (estudiantesSeleccionado) {
+        programaCtrl?.setValidators([Validators.required]);
+      } else {
+        programaCtrl?.clearValidators();
+        programaCtrl?.setValue('');
+      }
+      programaCtrl?.updateValueAndValidity();
+    });
     this.loadResponsables();
     this.adminService.obtenerListaAdmins().subscribe(data => {
       this.admins = data.map(a => ({...a, tipo: 'admin'}));
@@ -141,15 +160,25 @@ export class RegistroEventoComponent implements OnInit {
       this.errorMessage = 'Por favor, completa todos los campos obligatorios correctamente.';
       return;
     }
-    // Obtener los valores seleccionados de público objetivo
-    const selectedPublicos = this.publicos
-      .filter((_, i) => this.eventoForm.value.publico_objetivo[i])
-      .map(p => p.value);
-    // Preparar payload para el backend
+    // Obtener los valores seleccionados de público objetivo (array real)
+    const selectedPublicos = this.eventoForm.value.publico_objetivo
+      .map((checked, i) => checked ? this.publicos[i].value : null)
+      .filter(v => v !== null);
+
+    if (selectedPublicos.length === 0) {
+      this.errorMessage = 'Debes seleccionar un público objetivo.';
+      return;
+    }
+
     const formValue = this.eventoForm.value;
     let payload: any = {
       ...formValue,
-      publico_objetivo: selectedPublicos,
+      fecha_realizacion: formValue.fecha_realizacion
+        ? new Date(formValue.fecha_realizacion).toISOString().slice(0, 10)
+        : '',
+      publico_objetivo: selectedPublicos.length > 0
+        ? (selectedPublicos[0] === 'Público general' ? 'Publico general' : selectedPublicos[0])
+        : null,
       responsable_maestro: null,
       responsable_admin: null
     };
@@ -182,5 +211,24 @@ export class RegistroEventoComponent implements OnInit {
 
   updateResponsables() {
     this.responsables = [...this.admins, ...this.maestros];
+  }
+
+  getError(controlName: string): string {
+    const control = this.eventoForm.get(controlName);
+    if (control?.hasError('required')) return 'Este campo es obligatorio';
+    if (controlName === 'nombre_evento' && control?.hasError('pattern')) return 'Solo letras, números y espacios';
+    if (controlName === 'lugar' && control?.hasError('pattern')) return 'Solo letras, números y espacios';
+    if (controlName === 'descripcion_breve' && control?.hasError('pattern')) return 'Solo letras, números y signos de puntuación básicos';
+    if (controlName === 'descripcion_breve' && control?.hasError('maxlength')) return 'Máximo 300 caracteres';
+    if (controlName === 'cupo_maximo' && control?.hasError('pattern')) return 'Solo números positivos, máximo 3 dígitos';
+    return '';
+  }
+
+  registrarEvento() {
+    // Validaciones aquí si quieres
+    this.eventoService.crearEvento(this.evento).subscribe(
+      res => { /* éxito */ },
+      err => { /* error */ }
+    );
   }
 }
