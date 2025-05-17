@@ -66,16 +66,41 @@ export class RegistroUsuariosScreenComponent implements OnInit{
           this.user.email = response.user.email;
           this.user.tipo_usuario = this.rol;
           this.isAdmin = true;
-          //this.user.fecha_nacimiento = response.fecha_nacimiento.split("T")[0];
           console.log("Datos user: ", this.user);
         }, (error)=>{
           alert("No se pudieron obtener los datos del usuario para editar");
         }
       );
     }else if(this.rol == "maestro"){
-      //TODO:Agregar el servicio para obtener un maestro por ID
+      this.maestrosService.getMaestroByID(this.idUser).subscribe(
+        (response)=>{
+          this.user = response;
+          //Agregamos valores faltantes
+          this.user.first_name = response.user.first_name;
+          this.user.last_name = response.user.last_name;
+          this.user.email = response.user.email;
+          this.user.tipo_usuario = this.rol;
+          this.isMaestro = true;
+          console.log("Datos maestro: ", this.user);
+        }, (error)=>{
+          alert("No se pudieron obtener los datos del maestro para editar");
+        }
+      );
     }else if(this.rol == "alumno"){
-      //TODO:Agregar el servicio para obtener un alumno por ID
+      this.alumnosService.getAlumnoByID(this.idUser).subscribe(
+        (response)=>{
+          this.user = response;
+          //Agregamos valores faltantes
+          this.user.first_name = response.user.first_name;
+          this.user.last_name = response.user.last_name;
+          this.user.email = response.user.email;
+          this.user.tipo_usuario = this.rol;
+          this.isAlumno = true;
+          console.log("Datos alumno: ", this.user);
+        }, (error)=>{
+          alert("No se pudieron obtener los datos del alumno para editar");
+        }
+      );
     }
   }
 

@@ -40,8 +40,24 @@ export class EliminarUserModalComponent implements OnInit{
           this.dialogRef.close({isDelete:false});
         }
       );
-
+    }else if(this.rol == "maestro"){
+      this.maestrosService.eliminarMaestro(this.data.id).subscribe(
+        (response)=>{
+          console.log(response);
+          this.dialogRef.close({isDelete:true});
+        }, (error)=>{
+          this.dialogRef.close({isDelete:false});
+        }
+      );
+    }else if(this.rol == "alumno"){
+      this.alumnosService.eliminarAlumno(this.data.id).subscribe(
+        (response)=>{
+          console.log(response);
+          this.dialogRef.close({isDelete:true});
+        }, (error)=>{
+          this.dialogRef.close({isDelete:false});
+        }
+      );
     }
-    // TODO: Agregar servicios que faltan
   }
 }

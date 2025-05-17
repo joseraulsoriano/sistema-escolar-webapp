@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 //Este import es para los servicios HTTP
 import { HttpClientModule } from '@angular/common/http';
@@ -23,10 +23,12 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatDialogModule} from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
 //Para usar el mask
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 //Cambia el idioma a español
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 import { RegistroUsuariosScreenComponent } from './screens/registro-usuarios-screen/registro-usuarios-screen.component';
 import { HomeScreenComponent } from './screens/home-screen/home-screen.component';
@@ -40,6 +42,7 @@ import { MaestrosScreenComponent } from './screens/maestros-screen/maestros-scre
 import { EliminarUserModalComponent } from './modals/eliminar-user-modal/eliminar-user-modal.component';
 import { GraficasScreenComponent } from './screens/graficas-screen/graficas-screen.component';
 import { NgChartsModule } from 'ng2-charts';
+import { RegistroEventoComponent } from './partials/registro-evento/registro-evento/registro-evento.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +58,8 @@ import { NgChartsModule } from 'ng2-charts';
     AlumnosScreenComponent,
     MaestrosScreenComponent,
     EliminarUserModalComponent,
-    GraficasScreenComponent
+    GraficasScreenComponent,
+    RegistroEventoComponent
   ],
   imports: [
     BrowserModule,
@@ -76,11 +80,14 @@ import { NgChartsModule } from 'ng2-charts';
     MatTableModule,
     MatPaginatorModule,
     MatDialogModule,
-    NgChartsModule
+    MatCardModule,
+    NgChartsModule,
+    ReactiveFormsModule,
+    MatGridListModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'es-ES'},
-    provideNgxMask()
+    provideNgxMask(),
   ],
   bootstrap: [AppComponent]
 })

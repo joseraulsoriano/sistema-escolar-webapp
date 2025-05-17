@@ -1,0 +1,102 @@
+<div class="registro-evento-bg">
+  <div class="registro-evento-center">
+    <mat-card class="registro-evento-card">
+      <div class="registro-evento-header">
+        <mat-icon class="evento-icon">event</mat-icon>
+        <div class="registro-evento-title">Registrar Evento Académico</div>
+      </div>
+      <mat-card-content>
+        <div *ngIf="successMessage" class="alert-success">{{ successMessage }}</div>
+        <div *ngIf="errorMessage" class="alert-error">{{ errorMessage }}</div>
+        <form *ngIf="eventoForm" [formGroup]="eventoForm" (ngSubmit)="onSubmit()" class="evento-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre del evento</mat-label>
+            <input matInput formControlName="nombre_evento" maxlength="100">
+            <mat-error *ngIf="eventoForm.get('nombre_evento')?.hasError('required')">Campo obligatorio</mat-error>
+            <mat-error *ngIf="eventoForm.get('nombre_evento')?.hasError('pattern')">Solo letras, números y espacios</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de evento</mat-label>
+            <mat-select formControlName="tipo_evento">
+              <mat-option *ngFor="let tipo of tiposEvento" [value]="tipo">{{ tipo }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="eventoForm.get('tipo_evento')?.hasError('required')">Campo obligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha de realización</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fecha_realizacion" [min]="minDate">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="eventoForm.get('fecha_realizacion')?.hasError('required')">Campo obligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Hora de inicio</mat-label>
+            <input matInput type="time" formControlName="hora_inicio">
+            <mat-error *ngIf="eventoForm.get('hora_inicio')?.hasError('required')">Campo obligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Hora final</mat-label>
+            <input matInput type="time" formControlName="hora_final">
+            <mat-error *ngIf="eventoForm.get('hora_final')?.hasError('required')">Campo obligatorio</mat-error>
+            <mat-error *ngIf="eventoForm.get('hora_final')?.hasError('horaInvalida')">La hora final debe ser mayor que la de inicio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Lugar</mat-label>
+            <input matInput formControlName="lugar" maxlength="100">
+            <mat-error *ngIf="eventoForm.get('lugar')?.hasError('required')">Campo obligatorio</mat-error>
+            <mat-error *ngIf="eventoForm.get('lugar')?.hasError('pattern')">Solo letras, números y espacios</mat-error>
+          </mat-form-field>
+
+          <div class="publico-label"><b>Público objetivo:</b></div>
+          <div class="publico-checkboxes">
+            <mat-checkbox *ngFor="let pub of publicos" [value]="pub.value" (change)="onCheckboxChange($event)">
+              {{ pub.label }}
+            </mat-checkbox>
+            <mat-error *ngIf="eventoForm.get('publico_objetivo')?.invalid && eventoForm.get('publico_objetivo')?.touched">Selecciona al menos uno</mat-error>
+          </div>
+
+          <mat-form-field appearance="outline" *ngIf="eventoForm.get('publico_objetivo')?.value.includes('Estudiantes')">
+            <mat-label>Programa educativo</mat-label>
+            <mat-select formControlName="programa_educativo">
+              <mat-option *ngFor="let prog of programasEducativos" [value]="prog">{{ prog }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="eventoForm.get('programa_educativo')?.hasError('required')">Campo obligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Responsable del evento</mat-label>
+            <mat-select formControlName="responsable">
+              <mat-option *ngFor="let resp of responsables" [value]="resp.id">{{ resp.nombre }} ({{ resp.tipo }})</mat-option>
+            </mat-select>
+            <mat-error *ngIf="eventoForm.get('responsable')?.hasError('required')">Campo obligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Descripción breve</mat-label>
+            <textarea matInput formControlName="descripcion_breve" maxlength="300" rows="3"></textarea>
+            <mat-hint align="end">{{ eventoForm.get('descripcion_breve')?.value?.length || 0 }}/300</mat-hint>
+            <mat-error *ngIf="eventoForm.get('descripcion_breve')?.hasError('required')">Campo obligatorio</mat-error>
+            <mat-error *ngIf="eventoForm.get('descripcion_breve')?.hasError('pattern')">Solo letras, números y signos de puntuación básicos</mat-error>
+            <mat-error *ngIf="eventoForm.get('descripcion_breve')?.hasError('maxlength')">Máximo 300 caracteres</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Cupo máximo de asistentes</mat-label>
+            <input matInput type="number" formControlName="cupo_maximo" min="1" max="999">
+            <mat-error *ngIf="eventoForm.get('cupo_maximo')?.hasError('required')">Campo obligatorio</mat-error>
+            <mat-error *ngIf="eventoForm.get('cupo_maximo')?.hasError('pattern')">Solo números positivos, máximo 3 dígitos</mat-error>
+          </mat-form-field>
+
+          <div class="section-buttons">
+            <button mat-raised-button color="primary" type="submit" [disabled]="eventoForm.invalid" class="btn-primary">Registrar evento</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
