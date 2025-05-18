@@ -46,6 +46,7 @@ import { GraficasScreenComponent } from './screens/graficas-screen/graficas-scre
 import { NgChartsModule } from 'ng2-charts';
 import { RegistroEventoComponent } from './partials/registro-evento/registro-evento/registro-evento.component';
 import { EventosAcademicosScreenComponent } from './screens/eventos-academicos-screen/eventos-academicos-screen.component';
+import { ConfirmacionModalComponent } from './modals/confirmacion-modal/confirmacion-modal.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { EventosAcademicosScreenComponent } from './screens/eventos-academicos-s
     EliminarUserModalComponent,
     GraficasScreenComponent,
     RegistroEventoComponent,
-    EventosAcademicosScreenComponent
+    EventosAcademicosScreenComponent,
+    ConfirmacionModalComponent
   ],
   imports: [
     BrowserModule,

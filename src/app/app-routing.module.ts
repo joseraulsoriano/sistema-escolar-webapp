@@ -20,6 +20,7 @@ const routes: Routes = [
   { path: 'administrador', component: AdminScreenComponent, pathMatch: 'full' },
   { path: 'graficas', component: GraficasScreenComponent, pathMatch: 'full' },
   { path: 'registro-evento', component: RegistroEventoComponent },
+  { path: 'registro-evento/:id', component: RegistroEventoComponent },
   { path: 'eventos-academicos', component: EventosAcademicosScreenComponent },
 ];
 

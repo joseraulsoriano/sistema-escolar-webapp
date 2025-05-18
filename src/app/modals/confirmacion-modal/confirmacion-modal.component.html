@@ -1,0 +1,21 @@
+<div class="wrapper">
+  <div class="icon-close">
+      <button class="btn" (click)="cerrar_modal()">
+          <i class="bi bi-x-lg"></i>
+      </button>
+  </div>
+  <div class="body-modal">
+      <h1 class="title-modal">{{data.titulo}}</h1>
+      <span class="descripcion">
+        {{data.mensaje}}
+      </span>
+      <div class="buttons-modal">
+          <button mat-button class="btn-regresar" (click)="cerrar_modal()">
+              {{data.botonCancelar || 'CANCELAR'}}
+          </button>
+          <button mat-button class="btn-confirmar" (click)="confirmar()">
+              {{data.botonAceptar || 'EDITAR'}}
+          </button>
+      </div>
+  </div>
+</div>

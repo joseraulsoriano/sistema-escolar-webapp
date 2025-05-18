@@ -3,8 +3,10 @@ import { EventosService } from 'src/app/services/eventos.service';
 import { Evento } from 'src/app/modals/evento-admin/evento.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatDialog } from '@angular/material/dialog'; // Descomenta si usas el modal de eliminar
+import { MatDialog } from '@angular/material/dialog';
 import { FacadeService } from 'src/app/services/facade.service';
+import { EliminarUserModalComponent } from 'src/app/modals/eliminar-user-modal/eliminar-user-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-eventos-academicos-screen',
@@ -34,7 +36,7 @@ export class EventosAcademicosScreenComponent implements OnInit {
     'eliminar'
   ];
 
-  constructor(private eventosService: EventosService, private facadeService: FacadeService) {}
+  constructor(private eventosService: EventosService, private facadeService: FacadeService, private dialog: MatDialog, private router: Router) {}
 
   ngOnInit(): void {
     this.name_user = this.facadeService.getUserCompleteName();
@@ -59,12 +61,19 @@ export class EventosAcademicosScreenComponent implements OnInit {
   }
 
   editarEvento(evento: any) {
-    // Lógica para editar (puedes abrir un modal o navegar a un formulario)
-    console.log('Editar', evento);
+    // Navegar al formulario de registro con el ID del evento
+    this.router.navigate(['/registro-evento', evento.id]);
   }
 
   eliminarEvento(evento: any) {
-    // Lógica para eliminar (puedes abrir un modal de confirmación)
-    console.log('Eliminar', evento);
+    const dialogRef = this.dialog.open(EliminarUserModalComponent, {
+      data: { id: evento.id, rol: 'evento', nombre: evento.nombre_evento }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.isDelete) {
+        this.dataSource.data = this.dataSource.data.filter(e => e.id !== evento.id);
+      }
+    });
   }
 }

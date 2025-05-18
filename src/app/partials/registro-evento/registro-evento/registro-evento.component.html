@@ -5,6 +5,12 @@
       <div class="registro-evento-header">
         <span class="registro-evento-title">Registro de Evento Académico</span>
       </div>
+      <div *ngIf="successMessage" class="alert alert-success" style="margin-bottom: 10px;">
+        {{ successMessage }}
+      </div>
+      <div *ngIf="errorMessage" class="alert alert-danger" style="margin-bottom: 10px;">
+        {{ errorMessage }}
+      </div>
       <form [formGroup]="eventoForm" (ngSubmit)="onSubmit()" class="evento-form">
         <mat-form-field appearance="fill">
           <mat-label>Nombre del evento</mat-label>
@@ -71,10 +77,14 @@
         </mat-form-field>
 
         <div class="publico-label">Público objetivo</div>
-        <div formArrayName="publico_objetivo" class="publico-checkboxes">
-          <mat-checkbox *ngFor="let publico of publicos; let i = index" [formControlName]="i">
-            {{publico.label}}
-          </mat-checkbox>
+        <div *ngFor="let publico of publicos">
+          <input
+            type="radio"
+            [value]="publico.value"
+            formControlName="publico_objetivo"
+            [id]="publico.value"
+          />
+          <label [for]="publico.value">{{ publico.label }}</label>
         </div>
 
         <mat-form-field appearance="fill">
@@ -99,15 +109,16 @@
           <mat-error *ngIf="eventoForm.get('cupo_maximo')?.invalid && eventoForm.get('cupo_maximo')?.touched">{{ getError('cupo_maximo') }}</mat-error>
         </mat-form-field>
 
-        <ng-container *ngIf="mostrarProgramaEducativo">
+        <div *ngIf="mostrarProgramaEducativo">
           <mat-form-field appearance="fill">
-            <mat-label>Programa educativo</mat-label>
+            <mat-label>Programa educativo*</mat-label>
             <mat-select formControlName="programa_educativo" required>
-              <mat-option *ngFor="let programa of programasEducativos" [value]="programa">{{programa}}</mat-option>
+              <mat-option *ngFor="let programa of programasEducativos" [value]="programa">
+                {{ programa }}
+              </mat-option>
             </mat-select>
-            <mat-error *ngIf="eventoForm.get('programa_educativo')?.invalid && eventoForm.get('programa_educativo')?.touched">{{ getError('programa_educativo') }}</mat-error>
           </mat-form-field>
-        </ng-container>
+        </div>
 
         <div class="section-buttons">
           <button mat-raised-button color="primary" type="submit" class="btn-primary">Registrar</button>

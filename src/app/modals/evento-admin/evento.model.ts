@@ -1,14 +1,19 @@
 export interface Evento {
-  nombre: string;
-  tipo: string;
-  fecha: string;
+  id?: number;
+  nombre_evento: string;
+  tipo_evento: string;
+  fecha_realizacion: string;
   hora_inicio: string;
-  hora_fin: string;
+  hora_final: string;
   lugar: string;
-  publico_objetivo: string[];
-  responsable: { tipo: string, id: number };
-  descripcion?: string;
-  cupo: number;
+  publico_objetivo: string;
+  programa_educativo: string;
+  descripcion_breve: string;
+  cupo_maximo: number;
+  creation?: string;
+  update?: string;
+  responsable_maestro?: number | null;
+  responsable_admin?: number | null;
 }
 
 export interface EventosResponse {

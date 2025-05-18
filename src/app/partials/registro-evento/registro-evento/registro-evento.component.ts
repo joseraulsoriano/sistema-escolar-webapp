@@ -5,6 +5,10 @@ import { Evento } from 'src/app/modals/evento-admin/evento.model';
 import { AdministradoresService } from 'src/app/services/administradores.service';
 import { MaestrosService } from 'src/app/services/maestros.service';
 import { EventosService } from 'src/app/services/eventos.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmacionModalComponent } from 'src/app/modals/confirmacion-modal/confirmacion-modal.component';
+
 @Component({
   selector: 'app-registro-evento',
   templateUrl: './registro-evento.component.html',
@@ -12,11 +16,12 @@ import { EventosService } from 'src/app/services/eventos.service';
 })
 export class RegistroEventoComponent implements OnInit {
   eventoForm: FormGroup;
+  eventoId: number | null = null;
   tiposEvento = ['Conferencia', 'Taller', 'Seminario', 'Concurso'];
   publicos = [
     { label: 'Estudiantes', value: 'Estudiantes' },
     { label: 'Profesores', value: 'Profesores' },
-    { label: 'Público general', value: 'Público general' }
+    { label: 'Público general', value: 'Publico general' }
   ];
   programasEducativos = [
     'Ingeniería en Ciencias de la Computación',
@@ -29,19 +34,6 @@ export class RegistroEventoComponent implements OnInit {
   successMessage: string = '';
   errorMessage: string = '';
   minDate = new Date();
-
-  evento: Evento = {
-    nombre: '',
-    tipo: '',
-    fecha: '',
-    hora_inicio: '',
-    hora_fin: '',
-    lugar: '',
-    publico_objetivo: [],
-    responsable: { tipo: '', id: 0 },
-    descripcion: '',
-    cupo: 0
-  };
 
   admins: any[] = [];
   maestros: any[] = [];
@@ -58,37 +50,23 @@ export class RegistroEventoComponent implements OnInit {
     private adminService: AdministradoresService,
     private maestroService: MaestrosService,
     private eventoService: EventosService,
-  ) {}
-
-  ngOnInit(): void {
+    private route: ActivatedRoute,
+    private router: Router,
+    private dialog: MatDialog
+  ) {
     this.eventoForm = this.fb.group({
-      nombre_evento: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]+$')]],
+      nombre_evento: ['', [Validators.required, Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]+$/)]],
       tipo_evento: ['', Validators.required],
       fecha_realizacion: ['', Validators.required],
       hora_inicio: ['', Validators.required],
       hora_final: ['', Validators.required],
-      lugar: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]+$')]],
-      publico_objetivo: this.fb.array([], Validators.required),
+      lugar: ['', [Validators.required, Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]+$/)]],
+      publico_objetivo: ['', Validators.required],
       programa_educativo: [''],
       responsable: ['', Validators.required],
-      descripcion_breve: ['', [Validators.required, Validators.maxLength(300), Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 .,;:!¡¿?()\n\r]+$')]],
-      cupo_maximo: ['', [Validators.required, Validators.pattern('^[1-9][0-9]{0,2}$')]]
+      descripcion_breve: ['', [Validators.required, Validators.maxLength(300), Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 .,;:¡!¿?()\-]+$/)]],
+      cupo_maximo: ['', [Validators.required, Validators.pattern(/^[1-9][0-9]{0,2}$/)]]
     });
-    const publicoArray = this.eventoForm.get('publico_objetivo') as FormArray;
-    this.publicos.forEach(() => publicoArray.push(this.fb.control(false)));
-    this.eventoForm.get('publico_objetivo')?.valueChanges.subscribe(valores => {
-      const estudiantesSeleccionado = valores[0];
-      this.mostrarProgramaEducativo = !!estudiantesSeleccionado;
-      const programaCtrl = this.eventoForm.get('programa_educativo');
-      if (estudiantesSeleccionado) {
-        programaCtrl?.setValidators([Validators.required]);
-      } else {
-        programaCtrl?.clearValidators();
-        programaCtrl?.setValue('');
-      }
-      programaCtrl?.updateValueAndValidity();
-    });
-    this.loadResponsables();
     this.adminService.obtenerListaAdmins().subscribe(data => {
       this.admins = data.map(a => ({...a, tipo: 'admin'}));
       this.updateResponsables();
@@ -99,41 +77,39 @@ export class RegistroEventoComponent implements OnInit {
     });
   }
 
-  loadResponsables() {
-    this.loadingResponsables = true;
-    this.eventoForm.get('responsable')?.disable();
-    Promise.all([
-      this.http.get<any[]>('http://127.0.0.1:8000/lista-maestros/').toPromise(),
-      this.http.get<any[]>('http://127.0.0.1:8000/lista-admins/').toPromise()
-    ]).then(([maestros = [], admins = []]) => {
-      this.responsables = [
-        ...maestros.map(m => ({ id: m.id, nombre: m.user.first_name + ' ' + m.user.last_name, tipo: 'maestro' })),
-        ...admins.map(a => ({ id: a.id, nombre: a.user.first_name + ' ' + a.user.last_name, tipo: 'admin' }))
-      ];
-      this.loadingResponsables = false;
-      this.eventoForm.get('responsable')?.enable();
-    }).catch(() => {
-      this.loadingResponsables = false;
-      this.eventoForm.get('responsable')?.enable();
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.eventoId = +id;
+        this.esperarResponsablesYCargarEvento(this.eventoId);
+      }
+    });
+    this.eventoForm.get('publico_objetivo')?.valueChanges.subscribe(valor => {
+      this.mostrarProgramaEducativo = valor === 'Estudiantes';
+      const programaCtrl = this.eventoForm.get('programa_educativo');
+      if (valor === 'Estudiantes') {
+        programaCtrl?.setValidators([Validators.required]);
+      } else {
+        programaCtrl?.clearValidators();
+        programaCtrl?.setValue('');
+      }
+      programaCtrl?.updateValueAndValidity();
     });
   }
 
-  onCheckboxChange(e: any) {
-    const publicoArray: FormArray = this.eventoForm.get('publico_objetivo') as FormArray;
-    if (e.checked) {
-      publicoArray.push(this.fb.control(e.source.value));
+  esperarResponsablesYCargarEvento(id: number) {
+    if (this.responsables.length === 0) {
+      console.log('Esperando a que se carguen los responsables...');
+      const checkInterval = setInterval(() => {
+        if (this.responsables.length > 0) {
+          clearInterval(checkInterval);
+          this.cargarEvento(id);
+        }
+      }, 300);
     } else {
-      const idx = publicoArray.controls.findIndex(x => x.value === e.source.value);
-      if (idx !== -1) publicoArray.removeAt(idx);
+      this.cargarEvento(id);
     }
-    // Si selecciona "Estudiantes", el campo programa_educativo es obligatorio
-    if (publicoArray.value.includes('Estudiantes')) {
-      this.eventoForm.get('programa_educativo')?.setValidators([Validators.required]);
-    } else {
-      this.eventoForm.get('programa_educativo')?.clearValidators();
-      this.eventoForm.get('programa_educativo')?.setValue('');
-    }
-    this.eventoForm.get('programa_educativo')?.updateValueAndValidity();
   }
 
   validarHoras(): boolean {
@@ -150,6 +126,7 @@ export class RegistroEventoComponent implements OnInit {
   onSubmit() {
     this.successMessage = '';
     this.errorMessage = '';
+
     if (!this.validarHoras()) {
       this.eventoForm.get('hora_final')?.setErrors({ horaInvalida: true });
       this.errorMessage = 'La hora final debe ser mayor que la de inicio.';
@@ -160,53 +137,79 @@ export class RegistroEventoComponent implements OnInit {
       this.errorMessage = 'Por favor, completa todos los campos obligatorios correctamente.';
       return;
     }
-    // Obtener los valores seleccionados de público objetivo (array real)
-    const selectedPublicos = this.eventoForm.value.publico_objetivo
-      .map((checked, i) => checked ? this.publicos[i].value : null)
-      .filter(v => v !== null);
 
-    if (selectedPublicos.length === 0) {
-      this.errorMessage = 'Debes seleccionar un público objetivo.';
+    const formValue = this.eventoForm.value;
+    const publico = formValue.publico_objetivo;
+
+    if (publico === 'Estudiantes' && !formValue.programa_educativo) {
+      this.errorMessage = 'Selecciona el programa educativo';
       return;
     }
 
-    const formValue = this.eventoForm.value;
     let payload: any = {
       ...formValue,
       fecha_realizacion: formValue.fecha_realizacion
         ? new Date(formValue.fecha_realizacion).toISOString().slice(0, 10)
         : '',
-      publico_objetivo: selectedPublicos.length > 0
-        ? (selectedPublicos[0] === 'Público general' ? 'Publico general' : selectedPublicos[0])
-        : null,
+      publico_objetivo: publico === 'Público general' ? 'Publico general' : publico,
       responsable_maestro: null,
       responsable_admin: null
     };
-    const responsable = this.responsables.find(r => r.id == formValue.responsable?.id);
+
+    const responsable: any = this.responsables.find(r => r.id == formValue.responsable?.id);
     if (responsable?.tipo === 'maestro') {
       payload.responsable_maestro = responsable.id;
     } else if (responsable?.tipo === 'admin') {
       payload.responsable_admin = responsable.id;
     }
     delete payload.responsable;
-    // Llama al servicio para crear el evento
-    this.eventoService.crearEvento(payload).subscribe({
-      next: () => {
-        this.successMessage = '¡Evento registrado correctamente!';
-        this.errorMessage = '';
-        this.eventoForm.reset();
-        // Reinicializa el FormArray
-        const publicoArray = this.eventoForm.get('publico_objetivo') as FormArray;
-        while (publicoArray.length) {
-          publicoArray.removeAt(0);
+
+    if (this.eventoId) {
+      // Modal de confirmación para editar
+      const dialogRef = this.dialog.open(ConfirmacionModalComponent, {
+        data: {
+          titulo: 'Editar evento académico',
+          mensaje: 'Estás a punto de editar este evento y se generarán los cambios',
+          botonAceptar: 'EDITAR',
+          botonCancelar: 'CANCELAR'
         }
-        this.publicos.forEach(() => publicoArray.push(this.fb.control(false)));
-      },
-      error: (err) => {
-        this.errorMessage = 'Error al registrar el evento. Intenta de nuevo.';
-        this.successMessage = '';
-      }
-    });
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          // Si confirmó, continuar con la edición
+          if (this.eventoId !== null) {
+            this.eventoService.editarEvento(this.eventoId, payload).subscribe({
+              next: () => {
+                this.successMessage = '¡Evento editado correctamente!';
+                this.errorMessage = '';
+                setTimeout(() => {
+                  this.router.navigate(['/eventos-academicos']);
+                }, 1200);
+              },
+              error: () => {
+                this.errorMessage = 'No se pudo editar el evento.';
+                this.successMessage = '';
+              }
+            });
+          }
+        }
+      });
+    } else {
+      this.eventoService.crearEvento(payload).subscribe({
+        next: () => {
+          this.successMessage = '¡Evento registrado correctamente!';
+          this.errorMessage = '';
+          setTimeout(() => {
+            this.router.navigate(['/eventos-academicos']);
+          }, 1200);
+        },
+        error: () => {
+          this.errorMessage = 'No se pudo registrar el evento.';
+          this.successMessage = '';
+        }
+      });
+    }
   }
 
   updateResponsables() {
@@ -216,19 +219,56 @@ export class RegistroEventoComponent implements OnInit {
   getError(controlName: string): string {
     const control = this.eventoForm.get(controlName);
     if (control?.hasError('required')) return 'Este campo es obligatorio';
-    if (controlName === 'nombre_evento' && control?.hasError('pattern')) return 'Solo letras, números y espacios';
-    if (controlName === 'lugar' && control?.hasError('pattern')) return 'Solo letras, números y espacios';
-    if (controlName === 'descripcion_breve' && control?.hasError('pattern')) return 'Solo letras, números y signos de puntuación básicos';
-    if (controlName === 'descripcion_breve' && control?.hasError('maxlength')) return 'Máximo 300 caracteres';
-    if (controlName === 'cupo_maximo' && control?.hasError('pattern')) return 'Solo números positivos, máximo 3 dígitos';
+    if (controlName === 'nombre_evento' && control?.hasError('pattern')) return 'Solo letras, números y espacios. No se permiten caracteres especiales.';
+    if (controlName === 'lugar' && control?.hasError('pattern')) return 'Solo letras, números y espacios.';
+    if (controlName === 'descripcion_breve' && control?.hasError('pattern')) return 'Solo letras, números y signos de puntuación básicos.';
+    if (controlName === 'descripcion_breve' && control?.hasError('maxlength')) return 'Máximo 300 caracteres.';
+    if (controlName === 'cupo_maximo' && control?.hasError('pattern')) return 'Solo números positivos, máximo 3 dígitos.';
+    if (controlName === 'hora_final' && control?.hasError('horaInvalida')) return 'La hora final debe ser mayor que la de inicio.';
     return '';
   }
 
-  registrarEvento() {
-    // Validaciones aquí si quieres
-    this.eventoService.crearEvento(this.evento).subscribe(
-      res => { /* éxito */ },
-      err => { /* error */ }
-    );
+  cargarEvento(id: number) {
+    console.log('Cargando evento con ID:', id);
+    this.eventoService.obtenerEventoPorId(id).subscribe(evento => {
+      console.log('Datos del evento recibidos:', evento);
+      
+      // Adaptar la fecha (string a objeto Date)
+      const fecha = evento.fecha_realizacion ? new Date(evento.fecha_realizacion) : null;
+      
+      // Adaptar horas (quitar los segundos)
+      const horaInicio = evento.hora_inicio ? evento.hora_inicio.substring(0, 5) : '';
+      const horaFinal = evento.hora_final ? evento.hora_final.substring(0, 5) : '';
+      
+      // Buscar el responsable en la lista
+      let responsable: any = null;
+      if (evento.responsable_maestro) {
+        responsable = this.responsables.find(r => r.tipo === 'maestro' && r.id === evento.responsable_maestro);
+        console.log('Responsable maestro encontrado:', responsable);
+      } else if (evento.responsable_admin) {
+        responsable = this.responsables.find(r => r.tipo === 'admin' && r.id === evento.responsable_admin);
+        console.log('Responsable admin encontrado:', responsable);
+      }
+      
+      // Llenar el formulario con los datos
+      this.eventoForm.patchValue({
+        nombre_evento: evento.nombre_evento,
+        tipo_evento: evento.tipo_evento,
+        fecha_realizacion: fecha,
+        hora_inicio: horaInicio,  // Formato HH:MM (sin segundos)
+        hora_final: horaFinal,    // Formato HH:MM (sin segundos)
+        lugar: evento.lugar,
+        publico_objetivo: evento.publico_objetivo,
+        programa_educativo: evento.programa_educativo,
+        responsable: responsable ? { tipo: responsable.tipo, id: responsable.id } : '',
+        descripcion_breve: evento.descripcion_breve,
+        cupo_maximo: evento.cupo_maximo
+      });
+      
+      // Activar la validación del programa educativo si es necesario
+      if (evento.publico_objetivo === 'Estudiantes') {
+        this.mostrarProgramaEducativo = true;
+      }
+    });
   }
 }
