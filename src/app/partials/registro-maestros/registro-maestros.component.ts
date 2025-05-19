@@ -3,6 +3,8 @@ import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FacadeService } from 'src/app/services/facade.service';
 import { MaestrosService } from 'src/app/services/maestros.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmacionModalComponent } from 'src/app/modals/confirmacion-modal/confirmacion-modal.component';
 declare var $:any;
 
 @Component({
@@ -53,7 +55,8 @@ export class RegistroMaestrosComponent implements OnInit{
     private router: Router,
     private location : Location,
     public activatedRoute: ActivatedRoute,
-    private facadeService: FacadeService
+    private facadeService: FacadeService,
+    public dialog: MatDialog
   ){}
 
   ngOnInit(): void {
@@ -110,7 +113,36 @@ export class RegistroMaestrosComponent implements OnInit{
   }
 
   public actualizar(){
+    //Validación
+    this.errors = [];
+    this.errors = this.maestrosService.validarMaestro(this.maestro, this.editar);
+    if(!$.isEmptyObject(this.errors)){
+      return false;
+    }
+    console.log("Pasó la validación");
 
+    const dialogRef = this.dialog.open(ConfirmacionModalComponent, {
+      data: {
+        titulo: 'Editar maestro',
+        mensaje: '¿Estás seguro de que deseas editar este maestro? Los cambios se aplicarán inmediatamente.',
+        botonAceptar: 'EDITAR',
+        botonCancelar: 'CANCELAR'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.maestrosService.editarMaestro(this.maestro).subscribe(
+          (response)=>{
+            alert("Maestro editado correctamente");
+            console.log("Maestro editado: ", response);
+            this.router.navigate(["maestros"]);
+          }, (error)=>{
+            alert("No se pudo editar el maestro");
+          }
+        );
+      }
+    });
   }
 
   public checkboxChange(event:any){

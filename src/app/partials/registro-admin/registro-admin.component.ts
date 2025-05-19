@@ -3,6 +3,8 @@ import { Location } from '@angular/common';
 import { AdministradoresService } from 'src/app/services/administradores.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FacadeService } from 'src/app/services/facade.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmacionModalComponent } from 'src/app/modals/confirmacion-modal/confirmacion-modal.component';
 declare var $:any;
 
 @Component({
@@ -31,7 +33,8 @@ export class RegistroAdminComponent implements OnInit{
     public activatedRoute: ActivatedRoute,
     private administradoresService: AdministradoresService,
     private facadeService: FacadeService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ){}
 
   ngOnInit(): void {
@@ -119,23 +122,34 @@ export class RegistroAdminComponent implements OnInit{
   public actualizar(){
     //Validación
     this.errors = [];
-
     this.errors = this.administradoresService.validarAdmin(this.admin, this.editar);
     if(!$.isEmptyObject(this.errors)){
       return false;
     }
     console.log("Pasó la validación");
 
-    this.administradoresService.editarAdmin(this.admin).subscribe(
-      (response)=>{
-        alert("Administrador editado correctamente");
-        console.log("Admin editado: ", response);
-        //Si se editó, entonces mandar al home
-        this.router.navigate(["home"]);
-      }, (error)=>{
-        alert("No se pudo editar el administrador");
+    const dialogRef = this.dialog.open(ConfirmacionModalComponent, {
+      data: {
+        titulo: 'Editar usuario',
+        mensaje: 'Estás a punto de editar este usuario y se generarán los cambios',
+        botonAceptar: 'EDITAR',
+        botonCancelar: 'CANCELAR'
       }
-    );
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.administradoresService.editarAdmin(this.admin).subscribe(
+          (response)=>{
+            alert("Administrador editado correctamente");
+            console.log("Admin editado: ", response);
+            this.router.navigate(["home"]);
+          }, (error)=>{
+            alert("No se pudo editar el administrador");
+          }
+        );
+      }
+    });
   }
 
   public soloLetras(event: KeyboardEvent) {

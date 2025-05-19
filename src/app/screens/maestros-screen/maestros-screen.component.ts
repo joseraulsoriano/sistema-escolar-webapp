@@ -103,8 +103,14 @@ export class MaestrosScreenComponent implements OnInit{
   }
 
   public delete(idUser: number){
+    const maestro = this.lista_maestros.find(m => m.id === idUser);
+    const nombreCompleto = maestro ? `${maestro.first_name} ${maestro.last_name}` : '';
     const dialogRef = this.dialog.open(EliminarUserModalComponent,{
-      data: {id: idUser, rol: 'maestro'}, //Se pasan valores a través del componente
+      data: {
+        id: idUser,
+        rol: 'maestro',
+        nombre: nombreCompleto
+      },
       height: '288px',
       width: '328px',
     });

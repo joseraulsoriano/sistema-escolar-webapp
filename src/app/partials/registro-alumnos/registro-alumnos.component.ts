@@ -32,8 +32,14 @@ export class RegistroAlumnosComponent implements OnInit{
   ){}
 
   ngOnInit(): void {
-    this.alumno = this.alumnosService.esquemaAlumno();
-    this.alumno.rol = this.rol;
+    if(this.activatedRoute.snapshot.params['id'] != undefined){
+        this.editar = true;
+        this.idUser = this.activatedRoute.snapshot.params['id'];
+        this.alumno = this.datos_user;
+    } else {
+        this.alumno = this.alumnosService.esquemaAlumno();
+        this.alumno.rol = this.rol;
+    }
   }
 
   public regresar(){
