@@ -1,57 +1,95 @@
-.wrapper {
-  width: 450px;
-  position: relative;
-  padding: 1rem;
+.wrapper{
+  padding: 5px
+}
+//Estilo para quitar margenes al mat dialog
+::ng-deep .mat-dialog-container {
+  padding: 0!important;
+  margin: 0!important;
 }
 
-.icon-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
-.btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-
-.body-modal {
+.body-modal{
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 100%;
   justify-content: center;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.title-modal {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.descripcion {
-  font-size: 0.9rem;
   text-align: center;
-  margin-bottom: 1rem;
+  padding-right: 15px;
+  padding-left: 15px;
 }
-
-.buttons-modal {
+.icon-close{
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  flex-direction: row;
+  width: 100%;
+  justify-content: flex-end;
 }
 
-.btn-regresar {
-  background-color: #f0f0f0;
-  color: #333;
-  font-weight: 500;
+.bi-x-lg{
+  color: #E84150 !important;
+  font-size: 18px!important;
 }
 
-.btn-confirmar {
-  background-color: #3498db;
-  color: white;
-  font-weight: 500;
+.title-modal{
+  text-align: center;
+  font-family: Nexa-Bold;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.72px;
+  color: #406779;
+  opacity: 1;
+}
+
+.descripcion{
+  text-align: center;
+  font-family: Nexa;
+  font-size: 16px;
+  letter-spacing: 0px;
+  color: #000000;
+  opacity: 1;
+  margin-bottom: 20px;
+}
+
+.buttons-modal{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  gap: 20px;
+}
+
+.btn-regresar{
+  margin-top: 20px;
+  width: 132px;
+  height: 48px;
+  background: #F6F4F5 0% 0% no-repeat padding-box;
+  box-shadow: 0px 6px 10px #4F480733;
+  border: 1px solid #F6F4F5;
+  opacity: 1;
+  //Fuentes
+  text-align: center;
+  font-family: Nexa-Bold;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0px;
+  color: #E84150!important;
+  text-transform: uppercase;
+  opacity: 1;
+}
+
+.btn-confirmar{
+  margin-top: 20px;
+  width: 132px;
+  height: 48px;
+  background: #E84150 0% 0% no-repeat padding-box;
+  box-shadow: 0px 12px 20px #4E071433;
+  border: 1px solid #E84150;
+  opacity: 1;
+  //Fuentes
+  text-align: center;
+  font-family: Nexa-Bold;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0px;
+  color: #FFFFFF!important;
+  text-transform: uppercase;
+  opacity: 1;
 }

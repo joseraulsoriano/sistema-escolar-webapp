@@ -271,4 +271,8 @@ export class RegistroEventoComponent implements OnInit {
       }
     });
   }
+
+  irAlHome() {
+    this.router.navigate(['/home']);
+  }
 }
