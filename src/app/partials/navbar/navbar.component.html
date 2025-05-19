@@ -22,13 +22,13 @@
             <li class="nav-item">
               <a class="nav-link" id="graficas" (click)="clickNavLink('graficas')">Gráficas</a>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" *ngIf="rol=='administrador'">
               <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Registrar
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" (click)="goRegistro()" *ngIf="rol!='alumno'">Alumnos</a></li>
-                <li><a class="dropdown-item" (click)="goRegistro()" *ngIf="rol!='maestro' && rol!='alumno'">Maestros</a></li>
+                <li><a class="dropdown-item" (click)="goRegistro()">Alumnos</a></li>
+                <li><a class="dropdown-item" (click)="goRegistro()">Maestros</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" routerLink="/registro-evento">Eventos Académicos</a></li>
               </ul>

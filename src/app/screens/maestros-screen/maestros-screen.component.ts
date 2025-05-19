@@ -20,7 +20,7 @@ export class MaestrosScreenComponent implements OnInit{
   public lista_maestros: any[] = [];
 
   //Para la tabla
-  displayedColumns: string[] = ['id_trabajador', 'nombre', 'email', 'fecha_nacimiento', 'telefono', 'rfc', 'cubiculo', 'area_investigacion', 'editar', 'eliminar'];
+  displayedColumns: string[] = ['id_trabajador', 'nombre', 'email', 'fecha_nacimiento', 'telefono', 'rfc', 'cubiculo', 'area_investigacion'];
   dataSource = new MatTableDataSource<DatosUsuario>(this.lista_maestros as DatosUsuario[]);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -45,6 +45,10 @@ export class MaestrosScreenComponent implements OnInit{
     console.log("Token: ", this.token);
     if(this.token == ""){
       this.router.navigate([""]);
+    }
+    // Solo los administradores pueden editar y eliminar maestros
+    if (this.rol === 'administrador') {
+      this.displayedColumns.push('editar', 'eliminar');
     }
     //Obtener maestros
     this.obtenerMaestros();
@@ -99,32 +103,38 @@ export class MaestrosScreenComponent implements OnInit{
   }
 
   public goEditar(idUser: number){
-    this.router.navigate(["registro-usuarios/maestro/"+idUser]);
+    // Solo los administradores pueden editar maestros
+    if (this.rol === 'administrador') {
+      this.router.navigate(["registro-usuarios/maestro/"+idUser]);
+    }
   }
 
   public delete(idUser: number){
-    const maestro = this.lista_maestros.find(m => m.id === idUser);
-    const nombreCompleto = maestro ? `${maestro.first_name} ${maestro.last_name}` : '';
-    const dialogRef = this.dialog.open(EliminarUserModalComponent,{
-      data: {
-        id: idUser,
-        rol: 'maestro',
-        nombre: nombreCompleto
-      },
-      height: '288px',
-      width: '328px',
-    });
+    // Solo los administradores pueden eliminar maestros
+    if (this.rol === 'administrador') {
+      const maestro = this.lista_maestros.find(m => m.id === idUser);
+      const nombreCompleto = maestro ? `${maestro.first_name} ${maestro.last_name}` : '';
+      const dialogRef = this.dialog.open(EliminarUserModalComponent,{
+        data: {
+          id: idUser,
+          rol: 'maestro',
+          nombre: nombreCompleto
+        },
+        height: '288px',
+        width: '328px',
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result.isDelete){
-        console.log("Maestro eliminado");
-        //Recargar página
-        window.location.reload();
-      }else{
-        alert("Maestro no eliminado");
-        console.log("No se eliminó el maestro");
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if(result.isDelete){
+          console.log("Maestro eliminado");
+          //Recargar página
+          window.location.reload();
+        }else{
+          alert("Maestro no eliminado");
+          console.log("No se eliminó el maestro");
+        }
+      });
+    }
   }
 
 }//Fin de la clase

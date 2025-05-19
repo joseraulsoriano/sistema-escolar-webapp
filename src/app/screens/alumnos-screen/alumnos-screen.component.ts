@@ -20,7 +20,7 @@ export class AlumnosScreenComponent implements OnInit{
   public lista_alumnos: any[] = [];
 
   //Para la tabla
-  displayedColumns: string[] = ['matricula', 'nombre', 'email', 'fecha_nacimiento', 'edad', 'curp', 'rfc', 'telefono', 'ocupacion', 'editar', 'eliminar'];
+  displayedColumns: string[] = ['matricula', 'nombre', 'email', 'fecha_nacimiento', 'edad', 'curp', 'rfc', 'telefono', 'ocupacion'];
   dataSource = new MatTableDataSource<DatosUsuario>(this.lista_alumnos as DatosUsuario[]);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -47,6 +47,12 @@ export class AlumnosScreenComponent implements OnInit{
     if(this.token == ""){
       this.router.navigate([""]);
     }
+    
+    // Solo los administradores pueden editar y eliminar alumnos
+    if (this.rol === 'administrador') {
+      this.displayedColumns.push('editar', 'eliminar');
+    }
+    
     this.obtenerAlumnos();
     //Para paginador
     this.initPaginator();
@@ -100,26 +106,32 @@ export class AlumnosScreenComponent implements OnInit{
   }
 
   public goEditar(idUser: number){
-    this.router.navigate(["registro-usuarios/alumno/"+idUser]);
+    // Solo los administradores pueden editar alumnos
+    if (this.rol === 'administrador') {
+      this.router.navigate(["registro-usuarios/alumno/"+idUser]);
+    }
   }
 
   public delete(idUser: number){
-    const dialogRef = this.dialog.open(EliminarUserModalComponent,{
-      data: {id: idUser, rol: 'alumno'}, //Se pasan valores a través del componente
-      height: '288px',
-      width: '328px',
-    });
+    // Solo los administradores pueden eliminar alumnos
+    if (this.rol === 'administrador') {
+      const dialogRef = this.dialog.open(EliminarUserModalComponent,{
+        data: {id: idUser, rol: 'alumno'}, //Se pasan valores a través del componente
+        height: '288px',
+        width: '328px',
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result.isDelete){
-        console.log("Alumno eliminado");
-        //Recargar página
-        window.location.reload();
-      }else{
-        alert("Alumno no eliminado");
-        console.log("No se eliminó el alumno");
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if(result.isDelete){
+          console.log("Alumno eliminado");
+          //Recargar página
+          window.location.reload();
+        }else{
+          alert("Alumno no eliminado");
+          console.log("No se eliminó el alumno");
+        }
+      });
+    }
   }
 }
 //Esto va fuera de la llave que cierra la clase
