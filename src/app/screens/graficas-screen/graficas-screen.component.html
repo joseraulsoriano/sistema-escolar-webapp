@@ -4,79 +4,153 @@
       <app-navbar></app-navbar>
     </div>
     <div class="body-home">
-      <div class="row mt-5 mb-5">
+      <div class="row mt-5 mb-3">
         <div class="col-12">
           <span class="title-perfil">Análisis de datos del sistema</span>
         </div>
       </div>
       <div class="container">
-        <div class="row mt-3 mb-5" style="text-align: center;">
+        <!-- Sección de gráficas de eventos -->
+        <div class="row mt-4 mb-4">
           <div class="col-12">
             <div class="alert alert-primary" role="alert">
               <span class="title-table">Análisis de eventos académicos</span>
             </div>
           </div>
         </div>
-        <!-- Home para la sección de gráficas -->
-        <div class="row w-100" style="text-align: center;">
+        <div class="row w-100 mb-5">
           <div class="col-12">
             <div class="row">
               <div class="col-6 graph">
-                <canvas #lineChart
-                  baseChart
-                  [type]="'line'"
-                  [data]="lineChartData"
-                  [options]="lineChartOption"
-                  [plugins]="chartPlugins">
-                </canvas>
+                <div class="card">
+                  <div class="card-body">
+                    <canvas #lineChart
+                      baseChart
+                      [type]="'line'"
+                      [data]="lineChartData"
+                      [options]="lineChartOption"
+                      [plugins]="chartPlugins">
+                    </canvas>
+                  </div>
+                </div>
               </div>
               <div class="col-6 graph">
-                <canvas #barChart
-                  baseChart
-                  [type]="'bar'"
-                  [data]="barChartData"
-                  [options]="barChartOption"
-                  [plugins]="chartPlugins">
-                </canvas>
+                <div class="card">
+                  <div class="card-body">
+                    <canvas #barChart
+                      baseChart
+                      [type]="'bar'"
+                      [data]="barChartData"
+                      [options]="barChartOption"
+                      [plugins]="chartPlugins">
+                    </canvas>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="row mt-3 mb-5" style="text-align: center;">
+
+        <!-- Mostrar números de eventos en formato de tarjetas -->
+        <div class="row mt-4 mb-4">
+          <div class="col-12">
+            <div class="alert alert-primary" role="alert">
+              <span class="title-table">Totales de eventos académicos</span>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2 mb-5">
+          <div class="col">
+            <div class="card text-center">
+              <div class="card-body" style="background-color: rgba(248, 132, 6, 0.2);">
+                <h5 class="card-title">Conferencias</h5>
+                <p class="card-text display-4">{{total_eventos.total_conferencias}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card text-center">
+              <div class="card-body" style="background-color: rgba(252, 255, 68, 0.2);">
+                <h5 class="card-title">Talleres</h5>
+                <p class="card-text display-4">{{total_eventos.total_talleres}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card text-center">
+              <div class="card-body" style="background-color: rgba(130, 211, 251, 0.2);">
+                <h5 class="card-title">Seminarios</h5>
+                <p class="card-text display-4">{{total_eventos.total_seminarios}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card text-center">
+              <div class="card-body" style="background-color: rgba(251, 130, 245, 0.2);">
+                <h5 class="card-title">Concursos</h5>
+                <p class="card-text display-4">{{total_eventos.total_concursos}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de gráficas de usuarios -->
+        <div class="row mt-4 mb-4">
           <div class="col-12">
             <div class="alert alert-primary" role="alert">
               <span class="title-table">Análisis de usuarios</span>
             </div>
           </div>
         </div>
-        <div class="row w-100 mt-5 mb-5" style="text-align: center;">
-          <!-- Gráfica de pastel -->
-          <div class="col-6 graph">
-            <canvas #pieChart
-              baseChart
-              [type]="'pie'"
-              [data]="pieChartData"
-              [options]="pieChartOption"
-              [plugins]="chartPlugins">
-            </canvas>
-          </div>
-          <!-- Gráfica de Dona -->
-          <div class="col-6 graph">
-            <canvas #doughnutChart
-              baseChart
-              [type]="'doughnut'"
-              [data]="doughnutChartData"
-              [options]="doughnutChartOption"
-              [plugins]="chartPlugins">
-            </canvas>
+        <div class="row w-100 mb-5">
+          <div class="col-12">
+            <div class="row">
+              <!-- Gráfica de pastel -->
+              <div class="col-6 graph">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="text-center mb-3">Distribución de usuarios (Pastel)</h5>
+                    <canvas #pieChart
+                      baseChart
+                      [type]="'pie'"
+                      [data]="pieChartData"
+                      [options]="pieChartOption"
+                      [plugins]="chartPlugins">
+                    </canvas>
+                  </div>
+                </div>
+              </div>
+              <!-- Gráfica de Dona -->
+              <div class="col-6 graph">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="text-center mb-3">Distribución de usuarios (Dona)</h5>
+                    <canvas #doughnutChart
+                      baseChart
+                      [type]="'doughnut'"
+                      [data]="doughnutChartData"
+                      [options]="doughnutChartOption"
+                      [plugins]="chartPlugins">
+                    </canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- Mostrar números en formato de tarjetas -->
-        <div class="row mt-3 mb-5">
+        
+        <!-- Mostrar números de usuarios en formato de tarjetas -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="alert alert-primary" role="alert">
+              <span class="title-table">Totales de usuarios</span>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2 mb-5">
           <div class="col-4">
             <div class="card text-center">
-              <div class="card-body">
+              <div class="card-body" style="background-color: rgba(252, 255, 68, 0.2);">
                 <h5 class="card-title">Administradores</h5>
                 <p class="card-text display-4">{{total_user.total_administradores}}</p>
               </div>
@@ -84,7 +158,7 @@
           </div>
           <div class="col-4">
             <div class="card text-center">
-              <div class="card-body">
+              <div class="card-body" style="background-color: rgba(241, 200, 242, 0.2);">
                 <h5 class="card-title">Maestros</h5>
                 <p class="card-text display-4">{{total_user.total_maestros}}</p>
               </div>
@@ -92,7 +166,7 @@
           </div>
           <div class="col-4">
             <div class="card text-center">
-              <div class="card-body">
+              <div class="card-body" style="background-color: rgba(49, 231, 49, 0.2);">
                 <h5 class="card-title">Alumnos</h5>
                 <p class="card-text display-4">{{total_user.total_alumnos}}</p>
               </div>

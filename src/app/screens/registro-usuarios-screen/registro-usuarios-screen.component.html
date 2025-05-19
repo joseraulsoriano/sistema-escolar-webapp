@@ -44,7 +44,7 @@
               <div class="form-group col-12">
                 <mat-radio-group [(ngModel)]="user.tipo_usuario" (change)="radioChange($event)" [disabled]="editar">
                   <mat-radio-button value="administrador">Administrador</mat-radio-button>
-                  <mat-radio-button value="alumno">Alumno</mat-radio-button>
+                  <mat-radio-button value="alumno" [checked]="user.tipo_usuario === 'alumno'">Alumno</mat-radio-button>
                   <mat-radio-button value="maestro">Maestro</mat-radio-button>
                 </mat-radio-group>
               </div>
