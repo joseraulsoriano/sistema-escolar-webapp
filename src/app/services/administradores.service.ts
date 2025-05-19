@@ -136,7 +136,7 @@ export class AdministradoresService {
   }
 
   //Obtener el total de cada uno de los usuarios del sistema
-  public getTotalUsuarios(){
+  public getTotalUsuarios(): Observable<any> {
     var token = this.facadeService.getSessionToken();
     var headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': 'Bearer '+token});
     return this.http.get<any>(`${environment.url_api}/admins-edit/`, {headers:headers});

@@ -22,24 +22,22 @@
           <div class="col-12">
             <div class="row">
               <div class="col-6 graph">
-                <canvas
+                <canvas #lineChart
                   baseChart
-                  width="600"
-                  height="400"
-                  type="line"
+                  [type]="'line'"
                   [data]="lineChartData"
-                  [plugins]="lineChartPlugins"
-                  [options]="lineChartOption"></canvas>
+                  [options]="lineChartOption"
+                  [plugins]="chartPlugins">
+                </canvas>
               </div>
               <div class="col-6 graph">
-                <canvas
+                <canvas #barChart
                   baseChart
-                  width="600"
-                  height="400"
-                  type="bar"
+                  [type]="'bar'"
                   [data]="barChartData"
-                  [plugins]="barChartPlugins"
-                  [options]="barChartOption"></canvas>
+                  [options]="barChartOption"
+                  [plugins]="chartPlugins">
+                </canvas>
               </div>
             </div>
           </div>
@@ -54,25 +52,51 @@
         <div class="row w-100 mt-5 mb-5" style="text-align: center;">
           <!-- Gráfica de pastel -->
           <div class="col-6 graph">
-            <canvas
+            <canvas #pieChart
               baseChart
-              width="600"
-              height="400"
-              type="pie"
+              [type]="'pie'"
               [data]="pieChartData"
-              [plugins]="pieChartPlugins"
-              [options]="pieChartOption"></canvas>
+              [options]="pieChartOption"
+              [plugins]="chartPlugins">
+            </canvas>
           </div>
           <!-- Gráfica de Dona -->
           <div class="col-6 graph">
-            <canvas
+            <canvas #doughnutChart
               baseChart
-              width="600"
-              height="400"
-              type="doughnut"
+              [type]="'doughnut'"
               [data]="doughnutChartData"
-              [plugins]="doughnutChartPlugins"
-              [options]="doughnutChartOption"></canvas>
+              [options]="doughnutChartOption"
+              [plugins]="chartPlugins">
+            </canvas>
+          </div>
+        </div>
+
+        <!-- Mostrar números en formato de tarjetas -->
+        <div class="row mt-3 mb-5">
+          <div class="col-4">
+            <div class="card text-center">
+              <div class="card-body">
+                <h5 class="card-title">Administradores</h5>
+                <p class="card-text display-4">{{total_user.total_administradores}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card text-center">
+              <div class="card-body">
+                <h5 class="card-title">Maestros</h5>
+                <p class="card-text display-4">{{total_user.total_maestros}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card text-center">
+              <div class="card-body">
+                <h5 class="card-title">Alumnos</h5>
+                <p class="card-text display-4">{{total_user.total_alumnos}}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
